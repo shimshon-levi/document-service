@@ -1,42 +1,32 @@
-// src/documents/model.ts
-
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 const documentSchema = new Schema(
   {
     caseId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Case",
       required: true,
+      index: true,
     },
     uploadedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
-    originalName: {
-      type: String,
-      required: true,
-    },
-    storedName: {
-      type: String,
-      required: true,
-    },
-    mimeType: {
-      type: String,
-      required: true,
-    },
-    size: {
-      type: Number,
-      required: true,
-    },
-    description: {
-      type: String,
-    },
+
+    originalName: { type: String, required: true, trim: true },
+    storedName: { type: String, required: true }, // שם הקובץ על הדיסק/ענן
+    mimeType: { type: String, required: true },
+    size: { type: Number, required: true },
+
+    description: { type: String },
   },
-  {
-    timestamps: { createdAt: true, updatedAt: false },
-  }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
+documentSchema.index({ caseId: 1, createdAt: -1 });
+
 export const DocumentModel = mongoose.model("Document", documentSchema);
+
+export type DocumentId = Types.ObjectId;
